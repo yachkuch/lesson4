@@ -1,50 +1,55 @@
-#pragma once 
+#pragma once
 
-#include <vector>
+#include <tuple>
 #include <type_traits>
 
+template <typename T> struct is_container {
+private:
+  template <typename C> static char test(typename C::iterator *);
 
+  template <typename C> static int test(...);
 
-
-template<typename T>
-struct is_container  {
-    private:
-        template<typename C>
-        static char test(typename C::iterator*);
-        
-         template<typename C>
-         static int test(...);
-        
-    public:
-        enum { value = sizeof(test<T>(0)) == sizeof(char) };
+public:
+  enum { value = sizeof(test<T>(0)) == sizeof(char) };
 };
 
-
-
-// template <typename T>
-// void print_ip(T a){
-//     std::cout<<a<<std::endl;
-// }
-
-template <typename T> 
-typename  std::enable_if<is_container<T>::value>::type 
-void print_ip(T a){
-    std::cout<<"Cont"<<std::endl;
+/*
+* @brief Фукнкция печати
+*/
+template <typename T>
+decltype(std::cout << std::declval<T>(), void()) print_ip(T a) {
+  uint8_t bytes[sizeof(T)];
+  std::memcpy(bytes, &a, sizeof(T));
+  for (int i = sizeof(T) - 1; i >= 0; i--) {
+    std::cout << (int)bytes[i];
+    if (i != 0) {
+      std::cout << ".";
+    }
+  }
+  std::cout << std::endl;
 }
 
-// template <typename T>
-// decltype(begin(std::declval<T>()), end(std::declval<T>()), void())
-// print(T container)
-// {
-//     std::cout << "Values:{ ";
-//     for(auto value : container)
-//         std::cout << value << " ";
-//     std::cout << "}\n";
-// }
- 
-// template <typename T>
-// decltype(std::cout << std::declval<T>(), void())
-// print(T value)
-// {
-//     std::cout << "Value: " << value << "\n";
-// }
+template <typename T>
+decltype(std::declval<T>().begin(), void()) print_ip(const T &a) {
+  for (const auto &val : a) {
+    std::cout << val << ".";
+  }
+  std::cout << std::endl;
+}
+
+template <typename ...Args>
+void print_ip(const std::tuple<Args ...> &a) {
+  std::apply([](const auto &... args){
+    ((std::cout<<args<<"."),...);
+  },a);
+  std::cout << std::endl;
+}
+
+void print_ip(const std::string &str){
+    for(const auto &el : str){
+        std::cout<<el;
+    }
+    std::cout<<std::endl;
+}
+
+
