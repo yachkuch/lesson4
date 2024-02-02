@@ -5,6 +5,7 @@ include(CTest)
 enable_testing()
 
 add_executable(Lesson4 main func.h)
+set_target_properties(Lesson4 PROPERTIES CXX_STANDARD 17 CXX_STANDARD_REQUIRED ON)
 
 
 set(CPACK_PROJECT_NAME ${PROJECT_NAME})
