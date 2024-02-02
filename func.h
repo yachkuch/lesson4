@@ -19,7 +19,7 @@ public:
 template <typename T>
 decltype(std::cout << std::declval<T>(), void()) print_ip(T a) {
   uint8_t bytes[sizeof(T)];
-  std::memcpy(bytes, &a, sizeof(T));
+  memcpy(bytes, &a, sizeof(T));
   for (int i = sizeof(T) - 1; i >= 0; i--) {
     std::cout << (int)bytes[i];
     if (i != 0) {
